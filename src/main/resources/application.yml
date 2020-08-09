@@ -22,3 +22,7 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL55Dialect
         format_sql: true
+app:
+  drive:
+    applicationName: ${GOOGLE_DRIVE_APPLICATION_NAME:wakanda}
+    credentials: ${GOOGLE_DRIVE_CREDENTIALS}

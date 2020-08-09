@@ -14,14 +14,19 @@ import dev.wakanda.lessonsskill.repository.LessonRepository;
 public class LessonJPAGDriveService implements LessonService {
 	private static final Logger log = LoggerFactory.getLogger(LessonJPAGDriveService.class);
 	private LessonRepository lessonRepository;
+	private DriveService driveService;
 
-	public LessonJPAGDriveService(LessonRepository lessonRepository) {
+	public LessonJPAGDriveService(LessonRepository lessonRepository, DriveService driveService) {
 		this.lessonRepository = lessonRepository;
+		this.driveService = driveService;
 	}
 
 	@Override
 	public void saveLessonsBySkill(LessonsSkillDTO lessonsSkill) {
-		log.info("Start Service");
+		log.info("Start Lesson Service");
+		List<LessonGDriveFile> filesBySkillDriveId = driveService.getFilesBySkillDriveId(lessonsSkill.getSkillDriveID());
+		List<Lesson> lessonsByGDriveFile = LessonGDriveFile.convertToLessons(filesBySkillDriveId);
+		logAllLessons(lessonsByGDriveFile);
 //		logAllLessons();
 	}
 
@@ -29,5 +34,8 @@ public class LessonJPAGDriveService implements LessonService {
 	private void logAllLessons() {
 		List<Lesson> findAll = lessonRepository.findAll();
 		findAll.forEach(l -> log.info(l.toString()));
+	}
+	private void logAllLessons(List<Lesson> lessons) {
+		lessons.forEach(l -> log.info(l.toString()));
 	}
 }

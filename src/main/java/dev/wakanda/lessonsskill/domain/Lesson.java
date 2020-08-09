@@ -7,6 +7,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import dev.wakanda.lessonsskill.service.LessonGDriveFile;
+
 @Entity
 @Table(name = "lessons")
 public class Lesson {
@@ -24,6 +26,10 @@ public class Lesson {
 	private Integer skillSequence;
 	@Column(name = "skill_id")
 	private Long skillId;
+	
+	public Lesson(LessonGDriveFile gDriveFile) {
+		super();
+	}
 
 	public Long getId() {
 		return id;
