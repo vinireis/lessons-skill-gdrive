@@ -1,5 +1,8 @@
 package dev.wakanda.lessonsskill.domain;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-import dev.wakanda.lessonsskill.service.LessonGDriveFile;
+import com.google.api.services.drive.model.File;
 
 @Entity
 @Table(name = "lessons")
@@ -26,65 +29,38 @@ public class Lesson {
 	private Integer skillSequence;
 	@Column(name = "skill_id")
 	private Long skillId;
-	
-	public Lesson(LessonGDriveFile gDriveFile) {
-		super();
+
+	public Lesson(File gDriveFile) {
+		this.name = gDriveFile.getName();
+		this.fileId = gDriveFile.getId();
 	}
 
 	public Long getId() {
 		return id;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
 	public String getCode() {
 		return code;
-	}
-
-	public void setCode(String code) {
-		this.code = code;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public String getLink() {
 		return link;
-	}
-
-	public void setLink(String link) {
-		this.link = link;
 	}
 
 	public Float getDifficulty() {
 		return difficulty;
 	}
 
-	public void setDifficulty(Float difficulty) {
-		this.difficulty = difficulty;
-	}
-
 	public String getFileId() {
 		return fileId;
 	}
 
-	public void setFileId(String fileId) {
-		this.fileId = fileId;
-	}
-
 	public Integer getSkillSequence() {
 		return skillSequence;
-	}
-
-	public void setSkillSequence(Integer skillSequence) {
-		this.skillSequence = skillSequence;
 	}
 
 	@Override
@@ -130,4 +106,7 @@ public class Lesson {
 				+ ", skillSequence=" + skillSequence + ", skillId=" + skillId + "]";
 	}
 
+	public static List<Lesson> convertToLessons(List<File> filesBySkillDriveId) {
+		return filesBySkillDriveId.parallelStream().map(Lesson::new).collect(Collectors.toList());
+	}
 }

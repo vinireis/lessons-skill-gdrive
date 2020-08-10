@@ -6,8 +6,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import com.google.api.services.drive.model.File;
+
 import dev.wakanda.lessonsskill.api.dto.LessonsSkillDTO;
 import dev.wakanda.lessonsskill.domain.Lesson;
+import dev.wakanda.lessonsskill.exception.GDriveException;
 import dev.wakanda.lessonsskill.repository.LessonRepository;
 
 @Service
@@ -22,12 +25,11 @@ public class LessonJPAGDriveService implements LessonService {
 	}
 
 	@Override
-	public void saveLessonsBySkill(LessonsSkillDTO lessonsSkill) {
+	public void saveLessonsBySkill(LessonsSkillDTO lessonsSkill) throws GDriveException {
 		log.info("Start Lesson Service");
-		List<LessonGDriveFile> filesBySkillDriveId = driveService.getFilesBySkillDriveId(lessonsSkill.getSkillDriveID());
-		List<Lesson> lessonsByGDriveFile = LessonGDriveFile.convertToLessons(filesBySkillDriveId);
+		List<File> filesBySkillDriveId = driveService.getFilesBySkillDriveId(lessonsSkill.getSkillDriveID());
+		List<Lesson> lessonsByGDriveFile = Lesson.convertToLessons(filesBySkillDriveId);
 		logAllLessons(lessonsByGDriveFile);
-//		logAllLessons();
 	}
 
 	@SuppressWarnings("unused")

@@ -7,6 +7,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import dev.wakanda.lessonsskill.api.dto.LessonsSkillDTO;
+import dev.wakanda.lessonsskill.exception.GDriveException;
 import dev.wakanda.lessonsskill.service.LessonService;
 
 @RestController
@@ -20,7 +21,7 @@ public class LessonsSkillController {
 	}
 
 	@PostMapping(path = "/lesson")
-	public void saveLessonsBySkill(LessonsSkillDTO lessonsSkillDTO) {
+	public void saveLessonsBySkill(LessonsSkillDTO lessonsSkillDTO) throws GDriveException {
 		log.info("Start Controller!");
 		log.info("Request Body: {}", lessonsSkillDTO);
 		lessonService.saveLessonsBySkill(lessonsSkillDTO);
