@@ -31,4 +31,15 @@ public class GDriveService implements DriveService {
 		}
 	}
 
+	@Override
+	public String getFolderSkillName(String skillDriveID) throws GDriveException {
+		try {
+			return driveService.files()
+					.get(skillDriveID)
+					.execute().getName();
+		} catch (IOException e) {
+			throw new GDriveException(e);
+		}
+	}
+
 }

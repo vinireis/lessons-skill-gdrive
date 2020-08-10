@@ -5,9 +5,12 @@ import java.util.stream.Collectors;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.google.api.services.drive.model.File;
@@ -15,6 +18,7 @@ import com.google.api.services.drive.model.File;
 @Entity
 @Table(name = "lessons")
 public class Lesson {
+	private static final String REGEX_FOLDER_LESSON_GDRIVE = "(^\\d{1,2}) (.*)";
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -22,13 +26,13 @@ public class Lesson {
 	private String code;
 	@Column(length = 120, nullable = false)
 	private String name;
-	private String link;
 	@Column(name = "file_id")
 	private String fileId;
 	private Float difficulty;
 	private Integer skillSequence;
-	@Column(name = "skill_id")
-	private Long skillId;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "skill_id", referencedColumnName = "id")
+	private Skill skill;
 
 	public Lesson(File gDriveFile) {
 		this.name = gDriveFile.getName();
@@ -47,10 +51,6 @@ public class Lesson {
 		return name;
 	}
 
-	public String getLink() {
-		return link;
-	}
-
 	public Float getDifficulty() {
 		return difficulty;
 	}
@@ -62,14 +62,32 @@ public class Lesson {
 	public Integer getSkillSequence() {
 		return skillSequence;
 	}
+	
+	public Skill getSkill() {
+		return skill;
+	}
+
+	public Lesson setSkill(Skill skill) {
+		this.skill = skill;
+		return this;
+	}
+
+	private Integer extractLessonSequenceByFolderLessonName(String folderLessonName) {
+		return Integer.parseInt(folderLessonName.replaceAll(REGEX_FOLDER_LESSON_GDRIVE, "$1"));
+	}
+
+	private String extractLessonNameByFolderLessonName(String folderLessonName) {
+		return folderLessonName.replaceAll(REGEX_FOLDER_LESSON_GDRIVE, "$2");
+	}
 
 	@Override
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
 		result = prime * result + ((code == null) ? 0 : code.hashCode());
-		result = prime * result + ((fileId == null) ? 0 : fileId.hashCode());
-		result = prime * result + ((skillId == null) ? 0 : skillId.hashCode());
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		result = prime * result + ((skill == null) ? 0 : skill.hashCode());
+		result = prime * result + ((skillSequence == null) ? 0 : skillSequence.hashCode());
 		return result;
 	}
 
@@ -87,15 +105,20 @@ public class Lesson {
 				return false;
 		} else if (!code.equals(other.code))
 			return false;
-		if (fileId == null) {
-			if (other.fileId != null)
+		if (id == null) {
+			if (other.id != null)
 				return false;
-		} else if (!fileId.equals(other.fileId))
+		} else if (!id.equals(other.id))
 			return false;
-		if (skillId == null) {
-			if (other.skillId != null)
+		if (skill == null) {
+			if (other.skill != null)
 				return false;
-		} else if (!skillId.equals(other.skillId))
+		} else if (!skill.equals(other.skill))
+			return false;
+		if (skillSequence == null) {
+			if (other.skillSequence != null)
+				return false;
+		} else if (!skillSequence.equals(other.skillSequence))
 			return false;
 		return true;
 	}
@@ -103,10 +126,13 @@ public class Lesson {
 	@Override
 	public String toString() {
 		return "Lesson [code=" + code + ", name=" + name + ", fileId=" + fileId + ", difficulty=" + difficulty
-				+ ", skillSequence=" + skillSequence + ", skillId=" + skillId + "]";
+				+ ", skillSequence=" + skillSequence + ", skill=" + skill + "]";
 	}
 
-	public static List<Lesson> convertToLessons(List<File> filesBySkillDriveId) {
-		return filesBySkillDriveId.parallelStream().map(Lesson::new).collect(Collectors.toList());
+	public static List<Lesson> convertToLessons(List<File> filesBySkillDriveId,Skill skill) {
+		return filesBySkillDriveId.parallelStream()
+				.map(Lesson::new)
+				.map(l -> l.setSkill(skill))
+				.collect(Collectors.toList());
 	}
 }
