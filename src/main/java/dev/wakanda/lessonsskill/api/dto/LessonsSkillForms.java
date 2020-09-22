@@ -1,17 +1,27 @@
 package dev.wakanda.lessonsskill.api.dto;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 import dev.wakanda.lessonsskill.domain.Skill;
 import dev.wakanda.lessonsskill.exception.GDriveException;
 import dev.wakanda.lessonsskill.service.DriveService;
 
-public class LessonsSkillDTO {
+@Valid
+public class LessonsSkillForms {
+	@NotBlank
 	private String skillDriveID;
+	@NotBlank
 	private String skillCode;
+	@NotBlank
 	private String skillDifficulty;
+	@NotNull
 	private Long tribeId;
+	@NotNull
 	private Integer tribeSequence;
 
-	public LessonsSkillDTO(String skillDriveID, String skillCode, String skillDifficulty, Long tribeId,
+	public LessonsSkillForms(String skillDriveID, String skillCode, String skillDifficulty, Long tribeId,
 			Integer tribeSequence) {
 		this.skillDriveID = skillDriveID;
 		this.skillCode = skillCode;

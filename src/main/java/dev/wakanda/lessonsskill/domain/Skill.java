@@ -11,7 +11,7 @@ import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import dev.wakanda.lessonsskill.api.dto.LessonsSkillDTO;
+import dev.wakanda.lessonsskill.api.dto.LessonsSkillForms;
 
 @Entity
 @Table(name = "skills")
@@ -38,7 +38,7 @@ public class Skill {
 	@OneToMany(mappedBy = "skill")
 	private List<Lesson> lessons;
 
-	public Skill(String folderSkillName, LessonsSkillDTO lessonsSkillDTO) {
+	public Skill(String folderSkillName, LessonsSkillForms lessonsSkillDTO) {
 		this.tribeId = lessonsSkillDTO.getTribeId();
 		this.code = lessonsSkillDTO.getSkillCode();
 		this.tribeSequence = lessonsSkillDTO.getTribeSequence();

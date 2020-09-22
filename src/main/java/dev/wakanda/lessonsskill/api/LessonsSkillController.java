@@ -1,12 +1,14 @@
 package dev.wakanda.lessonsskill.api;
 
+import javax.validation.Valid;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import dev.wakanda.lessonsskill.api.dto.LessonsSkillDTO;
+import dev.wakanda.lessonsskill.api.dto.LessonsSkillForms;
 import dev.wakanda.lessonsskill.exception.GDriveException;
 import dev.wakanda.lessonsskill.service.LessonService;
 
@@ -21,9 +23,9 @@ public class LessonsSkillController {
 	}
 
 	@PostMapping(path = "/lesson")
-	public void saveLessonsBySkill(LessonsSkillDTO lessonsSkillDTO) throws GDriveException {
+	public void saveLessonsBySkill(@Valid LessonsSkillForms lessonsSkillForms) throws GDriveException {
 		log.info("Start Controller!");
-		log.info("Request Body: {}", lessonsSkillDTO);
-		lessonService.saveLessonsBySkill(lessonsSkillDTO);
+		log.info("Request Body: {}", lessonsSkillForms);
+		lessonService.saveLessonsBySkill(lessonsSkillForms);
 	}
 }
