@@ -15,13 +15,13 @@ public class LessonsSkillForms {
 	@NotBlank
 	private String skillCode;
 	@NotBlank
-	private String skillDifficulty;
+	private Integer skillDifficulty;
 	@NotNull
 	private Long tribeId;
 	@NotNull
 	private Integer tribeSequence;
 
-	public LessonsSkillForms(String skillDriveID, String skillCode, String skillDifficulty, Long tribeId,
+	public LessonsSkillForms(String skillDriveID, String skillCode, Integer skillDifficulty, Long tribeId,
 			Integer tribeSequence) {
 		this.skillDriveID = skillDriveID;
 		this.skillCode = skillCode;
@@ -42,7 +42,7 @@ public class LessonsSkillForms {
 		return skillCode;
 	}
 
-	public String getSkillDifficulty() {
+	public Integer getSkillDifficulty() {
 		return skillDifficulty;
 	}
 
