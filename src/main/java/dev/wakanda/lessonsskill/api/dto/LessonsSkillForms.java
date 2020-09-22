@@ -14,7 +14,7 @@ public class LessonsSkillForms {
 	private String skillDriveID;
 	@NotBlank
 	private String skillCode;
-	@NotBlank
+	@NotNull
 	private Integer skillDifficulty;
 	@NotNull
 	private Long tribeId;
