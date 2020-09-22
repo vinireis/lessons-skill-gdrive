@@ -1,6 +1,7 @@
 package dev.wakanda.lessonsskill.domain;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -10,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import dev.wakanda.lessonsskill.api.dto.LessonsSkillForms;
 
@@ -31,6 +33,8 @@ public class Skill {
 	private String description;
 
 	private Integer tribeSequence;
+	@Transient
+	private Integer skillDifficult;
 
 	@Column(name = "tribe_id")
 	private Long tribeId;
@@ -42,15 +46,26 @@ public class Skill {
 		this.tribeId = lessonsSkillDTO.getTribeId();
 		this.code = lessonsSkillDTO.getSkillCode();
 		this.tribeSequence = lessonsSkillDTO.getTribeSequence();
-		this.name = extractSkillNameByFolderSkillName(folderSkillName);
+		this.skillDifficult = lessonsSkillDTO.getSkillDifficulty();
+		this.name = extractSkillNameByFolderSkillName(folderSkillName).orElse(folderSkillName);
 	}
 
-	private String extractSkillNameByFolderSkillName(String folderSkillName) {
-		return folderSkillName.replaceAll(REGEX_FOLDER_GDRIVE, "$2");
+	private Optional<String> extractSkillNameByFolderSkillName(String folderSkillName) {
+		try {
+			return Optional.of(folderSkillName.replaceAll(REGEX_FOLDER_GDRIVE, "$2"));
+		} catch (Exception e) {
+			return Optional.empty();
+		}
 	}
 
 	@Override
 	public String toString() {
-		return "Skill [code=" + code + ", name=" + name + ", tribeSequence=" + tribeSequence + "]";
+		return "Skill [code=" + code + ", name=" + name + ", tribeSequence=" + tribeSequence + ", skillDifficult="
+				+ getSkillDifficult() + "]";
+	}
+
+	@Transient
+	public Integer getSkillDifficult() {
+		return skillDifficult;
 	}
 }

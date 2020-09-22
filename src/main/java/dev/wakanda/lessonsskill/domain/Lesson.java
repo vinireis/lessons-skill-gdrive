@@ -1,6 +1,7 @@
 package dev.wakanda.lessonsskill.domain;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.Column;
@@ -35,7 +36,8 @@ public class Lesson {
 	private Skill skill;
 
 	public Lesson(File gDriveFile) {
-		this.name = gDriveFile.getName();
+		this.name = extractLessonNameByFolderLessonName(gDriveFile.getName()).orElse(gDriveFile.getName());
+		this.skillSequence = extractLessonSequenceByFolderLessonName(gDriveFile.getName()).orElse(0);
 		this.fileId = gDriveFile.getId();
 	}
 
@@ -55,6 +57,11 @@ public class Lesson {
 		return difficulty;
 	}
 
+	public Lesson setDifficulty(Float difficulty) {
+		this.difficulty = difficulty;
+		return this;
+	}
+
 	public String getFileId() {
 		return fileId;
 	}
@@ -72,12 +79,20 @@ public class Lesson {
 		return this;
 	}
 
-	private Integer extractLessonSequenceByFolderLessonName(String folderLessonName) {
-		return Integer.parseInt(folderLessonName.replaceAll(REGEX_FOLDER_LESSON_GDRIVE, "$1"));
+	private Optional<Integer> extractLessonSequenceByFolderLessonName(String folderLessonName) {
+		try {
+			return Optional.of(Integer.parseInt(folderLessonName.replaceAll(REGEX_FOLDER_LESSON_GDRIVE, "$1")));
+		} catch (Exception e) {
+			return Optional.empty();
+		}
 	}
 
-	private String extractLessonNameByFolderLessonName(String folderLessonName) {
-		return folderLessonName.replaceAll(REGEX_FOLDER_LESSON_GDRIVE, "$2");
+	private Optional<String> extractLessonNameByFolderLessonName(String folderLessonName) {
+		try {
+			return Optional.of(folderLessonName.replaceAll(REGEX_FOLDER_LESSON_GDRIVE, "$2"));
+		} catch (Exception e) {
+			return Optional.empty();
+		}
 	}
 
 	@Override
@@ -133,6 +148,11 @@ public class Lesson {
 		return filesBySkillDriveId.parallelStream()
 				.map(Lesson::new)
 				.map(l -> l.setSkill(skill))
+				.map(l -> l.setDifficulty(getLessonDifficulty(filesBySkillDriveId, skill)))
 				.collect(Collectors.toList());
+	}
+
+	private static float getLessonDifficulty(List<File> filesBySkillDriveId, Skill skill) {
+		return (float) skill.getSkillDifficult() / (float) filesBySkillDriveId.size();
 	}
 }
