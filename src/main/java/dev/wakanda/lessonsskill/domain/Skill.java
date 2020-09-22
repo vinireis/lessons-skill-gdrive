@@ -60,12 +60,16 @@ public class Skill {
 
 	@Override
 	public String toString() {
-		return "Skill [code=" + code + ", name=" + name + ", tribeSequence=" + tribeSequence + ", skillDifficult="
+		return "Skill [code=" + getCode() + ", name=" + name + ", tribeSequence=" + tribeSequence + ", skillDifficult="
 				+ getSkillDifficult() + "]";
 	}
 
 	@Transient
 	public Integer getSkillDifficult() {
 		return skillDifficult;
+	}
+
+	public String getCode() {
+		return code;
 	}
 }

@@ -79,6 +79,11 @@ public class Lesson {
 		return this;
 	}
 
+	private Lesson buildCode() {
+		this.code = this.skill.getCode() +"-" + this.skillSequence;
+		return this;
+	}
+
 	private Optional<Integer> extractLessonSequenceByFolderLessonName(String folderLessonName) {
 		try {
 			return Optional.of(Integer.parseInt(folderLessonName.replaceAll(REGEX_FOLDER_LESSON_GDRIVE, "$1")));
@@ -141,14 +146,15 @@ public class Lesson {
 	@Override
 	public String toString() {
 		return "Lesson [code=" + code + ", name=" + name + ", fileId=" + fileId + ", difficulty=" + difficulty
-				+ ", skillSequence=" + skillSequence + ", skill=" + skill + "]";
+				+ ", skillSequence=" + skillSequence + ", skill=" + skill.getCode() + "]";
 	}
 
 	public static List<Lesson> convertToLessons(List<File> filesBySkillDriveId,Skill skill) {
 		return filesBySkillDriveId.parallelStream()
 				.map(Lesson::new)
-				.map(l -> l.setSkill(skill))
-				.map(l -> l.setDifficulty(getLessonDifficulty(filesBySkillDriveId, skill)))
+				.map(l -> l.setSkill(skill)
+						.setDifficulty(getLessonDifficulty(filesBySkillDriveId, skill))
+						.buildCode())
 				.collect(Collectors.toList());
 	}
 
