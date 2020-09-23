@@ -7,6 +7,7 @@ import javax.validation.constraints.NotNull;
 import dev.wakanda.lessonsskill.domain.Skill;
 import dev.wakanda.lessonsskill.exception.GDriveException;
 import dev.wakanda.lessonsskill.service.DriveService;
+import dev.wakanda.lessonsskill.service.SkillService;
 
 @Valid
 public class LessonsSkillForms {
@@ -56,8 +57,10 @@ public class LessonsSkillForms {
 				+ skillDifficulty + ", tribeId=" + tribeId + ", tribeSequence=" + tribeSequence + "]";
 	}
 
-	public Skill convertToSkill(DriveService driveService) throws GDriveException {
+	public Skill convertToSkill(DriveService driveService, SkillService skillService) throws GDriveException {
 		String folderSkillName = driveService.getFolderSkillName(this.getSkillDriveID());
-		return new Skill(folderSkillName, this);
+		Skill skill = new Skill(folderSkillName, this);
+		skillService.save(skill);
+		return skill;
 	}
 }
